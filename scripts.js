@@ -1,37 +1,12 @@
-const readMoreBtn = document.getElementById('readMoreBtn');
-const modal = document.getElementById('aboutModal');
-const closeModalBtn = document.getElementById('closeModalBtn');
-
-// Open modal
-readMoreBtn.addEventListener('click', () => {
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  document.body.style.overflow = 'hidden';
-});
-
-// Close modal
-closeModalBtn.addEventListener('click', () => {
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-  document.body.style.overflow = 'auto';
-});
-
-// Close when clicking outside the modal box
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = 'auto';
-  }
-});
-// Enable drag-to-scroll for mobile and desktop
+// ---------- DRAG-TO-SCROLL (Wine Slider) ----------
 const slider = document.querySelector('.wine-slider');
 
-let isDown = false;
-let startX;
-let scrollLeft;
-
 if (slider) {
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  // Desktop dragging
   slider.addEventListener('mousedown', (e) => {
     isDown = true;
     slider.classList.add('cursor-grabbing');
@@ -53,7 +28,45 @@ if (slider) {
     if (!isDown) return;
     e.preventDefault();
     const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 2; // scroll-fast factor
+    const walk = (x - startX) * 2; // scroll speed factor
     slider.scrollLeft = scrollLeft - walk;
+  });
+
+  // Mobile touch dragging
+  let touchStartX = 0;
+  let touchScrollLeft = 0;
+
+  slider.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].pageX;
+    touchScrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('touchmove', (e) => {
+    const x = e.touches[0].pageX;
+    const walk = (x - touchStartX) * 2;
+    slider.scrollLeft = touchScrollLeft - walk;
+  });
+}
+
+// ---------- MOBILE MENU TOGGLE ----------
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const menuIcon = document.getElementById('menuIcon');
+const closeIcon = document.getElementById('closeIcon');
+
+if (mobileMenuBtn && mobileMenu && menuIcon && closeIcon) {
+  mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    menuIcon.classList.toggle('hidden');
+    closeIcon.classList.toggle('hidden');
+  });
+
+  // Auto close when a link is clicked
+  document.querySelectorAll('#mobileMenu a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      menuIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+    });
   });
 }
